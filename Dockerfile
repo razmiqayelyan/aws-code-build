@@ -11,9 +11,9 @@ RUN amazon-linux-extras enable nginx1 && \
     rm -rf /var/cache/yum
 
 # Copy website files to the correct directory
-COPY index.html /usr/share/nginx/html/index.html
-COPY style.css /usr/share/nginx/html/style.css  # Corrected from styles.css
-COPY script.js /usr/share/nginx/html/script.js
+COPY ./index.html /usr/share/nginx/html/index.html
+COPY ./style.css /usr/share/nginx/html/style.css
+COPY ./script.js /usr/share/nginx/html/script.js
 COPY ./awslogo.png /usr/share/nginx/html/awslogo.png
 
 # Expose port 80 for Nginx
@@ -21,3 +21,4 @@ EXPOSE 80
 
 # Start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
+

@@ -1,13 +1,11 @@
 version: 0.2
 
-env:
-  variables:
-    IMAGE_NAME: "aws-code-build"
-
 phases:
   install:
-    runtime-versions:
-      docker: latest
+    commands:
+      - echo "Installing dependencies..."
+      - yum update -y
+      - yum install -y docker
 
   pre_build:
     commands:

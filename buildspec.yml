@@ -1,58 +1,25 @@
-version: 0.2
-
-env:
-  variables:
-    IMAGE_NAME: "aws-code-build"
-
-phases:
-  install:
-    commands:
-      - echo "Installing dependencies..."
-      - yum update -y
-      - yum install -y docker
-
-  pre_build:
-    commands:
-      - echo "Logging in to Amazon ECR..."
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-
-  build:
-    commands:
-      - echo "Checking if required files exist in the workspace..."
-      - ls -la  # Debugging step to verify all files are present
-      - |
-        if [ ! -f "awslogo.png" ]; then 
-          echo "ERROR: awslogo.png is missing!"; 
-          exit 1; 
-        fi
-        if [ ! -f "style.css" ]; then 
-          echo "ERROR: style.css is missing!"; 
-          exit 1; 
-        fi
-        if [ ! -f "script.js" ]; then 
-          echo "ERROR: script.js is missing!"; 
-          exit 1; 
-        fi
-        if [ ! -f "index.html" ]; then 
-          echo "ERROR: index.html is missing!"; 
-          exit 1; 
-        fi
-      - echo "Building the Docker image..."
-      - docker build -t $IMAGE_NAME .
-      - docker tag $IMAGE_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
-
-  post_build:
-    commands:
-      - echo "Pushing the Docker image to ECR..."
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
-      - echo "Build completed successfully."
-
-artifacts:
-  files:
-    - index.html
-    - style.css
-    - script.js
-    - awslogo.png
-    - Dockerfile
-    - buildspec.yml
-
+build:
+  commands:
+    - echo "📂 Checking if required files exist in the workspace..."
+    - ls -la  # Debugging step to verify all files are present
+    - |
+      if [ ! -f "awslogo.png" ]; then 
+        echo "❌ ERROR: awslogo.png is missing!"; 
+        exit 1; 
+      fi
+      if [ ! -f "style.css" ]; then 
+        echo "❌ ERROR: style.css is missing!"; 
+        exit 1; 
+      fi
+      if [ ! -f "script.js" ]; then 
+        echo "❌ ERROR: script.js is missing!"; 
+        exit 1; 
+      fi
+      if [ ! -f "index.html" ]; then 
+        echo "❌ ERROR: index.html is missing!"; 
+        exit 1; 
+      fi
+    - echo "✅ All required files are present!"
+    - echo "🏗️  Building the Docker image..."
+    - docker build -t $IMAGE_NAME .
+    - docker tag $IMAGE_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest

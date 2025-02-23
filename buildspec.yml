@@ -33,7 +33,7 @@ phases:
         fi
       - echo "✅ All required files are present!"
       - echo "🏗️  Building the Docker image..."
-      - docker build -t $IMAGE_NAME .
+      - docker build --no-cache -t $IMAGE_NAME .
       - docker tag $IMAGE_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
 
   post_build:
@@ -47,6 +47,6 @@ artifacts:
     - index.html
     - style.css
     - script.js
-    - awslogo.png  # ✅ Ensures AWS CodeBuild pulls this file
+    - awslogo.png
     - Dockerfile
     - buildspec.yml

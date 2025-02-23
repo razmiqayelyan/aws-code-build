@@ -18,8 +18,12 @@ phases:
 
   build:
     commands:
-      - echo "Checking if files exist in the workspace..."
-      - ls -la  # Debugging step: Verify files are present
+      - echo "Checking if required files exist in the workspace..."
+      - ls -la  # Debugging step to list all files before Docker build
+      - if [ ! -f "awslogo.png" ]; then echo "ERROR: awslogo.png is missing!"; exit 1; fi
+      - if [ ! -f "style.css" ]; then echo "ERROR: style.css is missing!"; exit 1; fi
+      - if [ ! -f "script.js" ]; then echo "ERROR: script.js is missing!"; exit 1; fi
+      - if [ ! -f "index.html" ]; then echo "ERROR: index.html is missing!"; exit 1; fi
       - echo "Building the Docker image..."
       - docker build -t $IMAGE_NAME .
       - docker tag $IMAGE_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
@@ -33,8 +37,8 @@ phases:
 artifacts:
   files:
     - index.html
-    - styles.css
+    - style.css  # Ensure this matches your Dockerfile
     - script.js
-    - awslogo.png
+    - awslogo.png  # Ensures AWS CodeBuild pulls this file
     - Dockerfile
     - buildspec.yml
